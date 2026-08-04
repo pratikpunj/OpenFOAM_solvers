@@ -1,0 +1,9 @@
+#!/bin/bash
+
+checkMesh
+topoSet -noFunctionObjects
+setFields
+decomposePar -force
+mpirun -n 15 renumberMesh -overwrite -parallel
+mpirun -n 15 CDEwithLangmuirIsotherm -parallel 
+#reconstructPar	-latestTime

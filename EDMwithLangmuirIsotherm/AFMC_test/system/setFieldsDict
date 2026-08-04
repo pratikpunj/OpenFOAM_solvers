@@ -1,0 +1,46 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.com
+    \\  /    A nd           | Version:  v2506
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      setFieldsDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+defaultFieldValues
+(
+	volScalarField eps 1.0
+	volTensorField D (4.11e-11 0 0 0 4.11e-11 0 0 0 4.11e-11)
+	volScalarField q_s 0
+	volScalarField b 0
+	volScalarField k 0
+	
+);
+
+regions
+(
+    cellToCell
+    {
+        set             porous; // Matches the cellSet name from topoSet
+        fieldValues
+        (
+		volScalarField eps 0.8
+		volTensorField D (4.5e-8 0 0 0 4.5e-8 0 0 0 4.5e-8)
+		volScalarField q_s 12.0
+		volScalarField b 4.5
+		volScalarField k 0.86
+        );
+    }
+);
+
+
+
+
+// ************************************************************************* //

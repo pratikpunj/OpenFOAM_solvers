@@ -1,0 +1,78 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2306                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     EDMwithLangmuirIsotherm;
+
+startFrom       latestTime;
+
+stopAt          endTime;
+
+//stopAt          writeNow;
+
+endTime         700;
+
+deltaT          0.005;
+
+writeControl    runTime;
+
+writeInterval   1.0;
+
+//purgeWrite      0;
+
+writeFormat     binary;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   7;
+
+runTimeModifiable yes;
+
+// ************************************************************************* //
+
+functions
+{
+	/*
+	Maximum_Concentration
+	{
+		#includeEtc "caseDicts/postProcessing/minMax/cellMax"
+		enabled 	    true; 	//true or false
+		log             true;	//write to screen
+		fields  (C);
+	}
+
+	Minimum_Concentration
+	{
+		#includeEtc "caseDicts/postProcessing/minMax/cellMin"
+		enabled 	    true; 	//true or false
+		log             true;	//write to screen
+		fields  (C);
+	}
+	*/
+	Outlet_Concentation
+	{
+		#includeEtc "caseDicts/postProcessing/surfaceFieldValue/patch.cfg"
+		enabled 	    true; 	//true or false
+		log             true;	//write to screen
+		name	outlet;		
+		operation areaAverage;		
+		fields  (C);
+	}
+	
+} 

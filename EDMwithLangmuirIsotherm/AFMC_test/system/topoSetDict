@@ -1,0 +1,35 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      topoSetDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+actions
+(
+    // 1. Select the cells in the cylinder and put them in a 'cellSet'
+    {
+        name    porous;
+        type    cellZoneSet;
+        action  new;
+        source  cylinderToCell;
+        sourceInfo
+    	{
+    		p1          (-0.000285 0 0); // Coordinate of one of the endpoints
+    		p2          (0.000285 0 0); // Coordinate of the other endpoint
+    		radius      0.010;   // Cylinder outer radius
+	}
+
+    }
+
+);

@@ -28,7 +28,7 @@ regions
         fieldValues
         (
 		volScalarFieldValue eps 0.9142
-		volTensorField D (1.37e-11 0 0 0 4.5e-7 0 0 0 1.37e-11)
+		volTensorField D (4.5e-7 0 0 0 4.5e-7 0 0 0 4.5e-7)
         );
     }
 );

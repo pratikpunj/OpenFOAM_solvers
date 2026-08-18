@@ -1,0 +1,103 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    arch        "LSB;label=32;scalar=64";
+    class       volVectorField;
+    location    "0";
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField   #codeStream
+{
+    codeInclude
+    #{
+        #include "fvCFD.H"
+        #include <cmath>
+    #};
+
+    codeOptions
+    #{
+        -O3 -I$(LIB_SRC)/finiteVolume/lnInclude -I$(LIB_SRC)/meshTools/lnInclude
+    #};
+
+    codeLibs
+    #{
+        -lfiniteVolume -lmeshTools
+    #};
+
+    code
+    #{
+        // 1. Get access to the mesh
+        const IOdictionary& d = static_cast<const IOdictionary&>(dict);
+        const fvMesh& mesh = refCast<const fvMesh>(d.db());
+
+        // 2. Prepare a list of vectors (same size as number of cells)
+        const vectorField& C = mesh.C();
+        vectorField values(C.size());
+
+        // 3. Define Constants
+        const scalar Uy_base = 0.0004244;      // u_y
+        const scalar R = 0.005;           // Radius
+        const scalar alpha_prime = -8.76;  // alpha'
+        
+        // 4. Calculate 'n'
+        const scalar n = 311.0 / (1.0 + std::exp(1.6762 * (alpha_prime + 9.702)));
+
+        // 5. Loop over all cells to calculate values
+        forAll(C, i)
+        {
+            const scalar x = C[i].x();
+            const scalar z = C[i].z();
+            const scalar r = std::sqrt(x*x + z*z);
+            
+            // Calculate radial profile term [1 - (r/R)^n]
+            scalar term = 0.0;
+            if (r < R) 
+            {
+                term = std::pow((r/R), n);
+            }
+            else 
+            {
+                term = 1.0; // Wall condition
+            }
+            
+            scalar ur_val = Uy_base * (1.0 - term);
+
+            // 6. Assign values: 
+            // "U_y in y direction" -> Uy_base
+            // "U_r in x, z direction" -> ur_val (as requested)
+            values[i] = vector(0, ur_val, 0);
+        }
+
+        // 7. CRITICAL FIX: Write the list to the output stream 'os'
+        // This passes the data back to OpenFOAM's parser.
+        os << "nonuniform List<vector> " << values;
+    #};
+};
+
+boundaryField
+{
+    "inlet|outlet"
+    {
+        type            fixedValue;
+        value           uniform (0 0.0004244 0);
+    }
+    wall
+    {
+    	type		fixedValue;
+    	value		uniform (0 0 0);
+    }
+}
+
+// ************************************************************************* //

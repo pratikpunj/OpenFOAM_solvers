@@ -1,0 +1,8 @@
+#!/bin/bash
+
+topoSet -noFunctionObjects
+checkMesh
+setFileds
+decomposePar -force
+mpirun -n 15 renumberMesh -overwrite -parallel
+mpirun -n 15 NBFoam -parallel 

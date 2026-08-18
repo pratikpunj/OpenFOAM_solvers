@@ -1,0 +1,39 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      topoSetDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+actions
+(
+    // 1. Select the cells in the cylinder and put them in a 'cellSet'
+    {
+        name    porousCells;
+        type    cellSet;
+        action  new;
+        source  cylinderToCell;
+        p1      (0 -0.1 0);   // Start point of cylinder axis
+        p2      (0 0.1 0);    // End point of cylinder axis
+        radius  0.0025;       // Cylinder radius
+    }
+
+    // 2. Create the 'cellZone' from that 'cellSet' for the solver to use
+    {
+        name    porous;       // The name used in setFields and fvOptions
+        type    cellZoneSet;
+        action  new;
+        source  setToCellZone;
+        set     porousCells;
+    }
+);

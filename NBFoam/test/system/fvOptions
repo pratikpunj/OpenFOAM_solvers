@@ -1,0 +1,44 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.com
+    \\  /    A nd           | Version:  v2506
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      fvOptions;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+limitC
+{
+    type            scalarCodedSource;
+    libs            (fvOptions);
+    selectionMode   all;
+    fields          (C);
+    name            limitC;
+
+    codeCorrect
+    #{
+        auto& C = mesh().lookupObjectRef<volScalarField>("C");
+        C.max(0.0);
+        C.correctBoundaryConditions();
+    #};
+
+    codeAddSup
+    #{
+        // Empty - nothing added to the source term
+    #};
+
+    codeSetValue
+    #{
+        // Empty - no fixed values set
+    #};
+}
+
+
+// ************************************************************************* //

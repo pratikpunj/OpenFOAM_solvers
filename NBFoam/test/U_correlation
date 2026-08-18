@@ -47,12 +47,12 @@ internalField   #codeStream
         vectorField values(C.size());
 
         // 3. Define Constants
-        const scalar Uy_base = 0.0004244;      // u_y
-        const scalar R = 0.005;           // Radius
-        const scalar alpha_prime = -8.76;  // alpha'
+        const scalar Uy_base = 0.0004244;      // u_y (geometric velocity at the inlet face or U_s in axial direction)
+        const scalar R = 0.005;           // Radius of column
+        const scalar alpha_prime = -8.76;  // log(alpha)
         
         // 4. Calculate 'n'
-        const scalar n = 311.0 / (1.0 + std::exp(1.6762 * (alpha_prime + 9.702)));
+        const scalar n = 309.8517 / (1.0 + std::exp(1.6811 * (alpha_prime + 9.6806)));
 
         // 5. Loop over all cells to calculate values
         forAll(C, i)
@@ -76,7 +76,7 @@ internalField   #codeStream
 
             // 6. Assign values: 
             // "U_y in y direction" -> Uy_base
-            // "U_r in x, z direction" -> ur_val (as requested)
+            // "U_r in x, z direction" -> ur_val
             values[i] = vector(0, ur_val, 0);
         }
 
